@@ -1,12 +1,14 @@
-
 import sys
 import string
 import random
 from typing import TypedDict
 
+
 class Individual(TypedDict):
     genome: str
     fitness: int
+
+
 Population = list[Individual]
 
 
@@ -22,7 +24,8 @@ def initialize_individual(genome: str, fitness: int) -> Individual:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def initialize_pop(objective: str, pop_size: int) -> Population:
     """
@@ -36,7 +39,8 @@ def initialize_pop(objective: str, pop_size: int) -> Population:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def recombine_pair(parent1: Individual, parent2: Individual) -> Population:
     """
@@ -50,8 +54,9 @@ def recombine_pair(parent1: Individual, parent2: Individual) -> Population:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
-    
+    print("Delete this and write your code")
+
+
 def recombine_group(parents: Population, recombine_rate: float) -> Population:
     """
     Purpose:        Recombines a whole group, returns the new population
@@ -64,7 +69,8 @@ def recombine_group(parents: Population, recombine_rate: float) -> Population:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def mutate_individual(parent: Individual, mutate_rate: float) -> Individual:
     """
@@ -78,8 +84,9 @@ def mutate_individual(parent: Individual, mutate_rate: float) -> Individual:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
-    
+    print("Delete this and write your code")
+
+
 def mutate_group(children: Population, mutate_rate: float) -> Population:
     """
     Purpose:        Mutates a whole Population, returns the mutated group
@@ -92,7 +99,9 @@ def mutate_group(children: Population, mutate_rate: float) -> Population:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
+
 def evaluate_individual(objective: str, individual: Individual) -> None:
     """
     Purpose:        Computes and modifies the fitness for one individual
@@ -105,8 +114,9 @@ def evaluate_individual(objective: str, individual: Individual) -> None:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
-    
+    print("Delete this and write your code")
+
+
 def evaluate_group(objective: str, individuals: Population) -> None:
     """
     Purpose:        Computes and modifies the fitness for population
@@ -119,7 +129,8 @@ def evaluate_group(objective: str, individuals: Population) -> None:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def rank_group(individuals: Population) -> None:
     """
@@ -133,7 +144,8 @@ def rank_group(individuals: Population) -> None:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def parent_select(individuals: Population, number: int) -> Population:
     """
@@ -147,8 +159,9 @@ def parent_select(individuals: Population, number: int) -> Population:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    print('Delete this and write your code')
-    
+    print("Delete this and write your code")
+
+
 def survivor_select(individuals: Population, pop_size: int) -> Population:
     """
     Purpose:        Picks who gets to live!
@@ -162,7 +175,8 @@ def survivor_select(individuals: Population, pop_size: int) -> Population:
     Status:         
    
     """
-    print('Delete this and write your code')
+    print("Delete this and write your code")
+
 
 def evolve(objective: str, pop_size: int) -> Population:
     """
@@ -196,11 +210,13 @@ def evolve(objective: str, pop_size: int) -> Population:
             best_fitness = population[0]["fitness"]
             print("Iteration number", counter, "with best individual", population[0])
     return population
-    
+
+
 if __name__ == "__main__":
     # Execute doctests to protect main:
     import doctest
     import json
+
     # This seeds, so can be commented for random runs
     doctest.testmod()
     if len(sys.argv) == 3:

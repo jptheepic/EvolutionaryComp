@@ -1,19 +1,22 @@
-
 import sys
 import numpy as np
 import string
 import random
 from typing import TypedDict
 
+
 class Individual(TypedDict):
     genome: list
     fitness: int
+
+
 Population = list[Individual]
 
-#TODO: Fix random documentation
-#TODO: Do more research on diminishing mutation rate
+# TODO: Fix random documentation
+# TODO: Do more research on diminishing mutation rate
 
-def initialize_individual(genome:list, fitness: int) -> Individual:
+
+def initialize_individual(genome: list, fitness: int) -> Individual:
     """
     Purpose:        Create one individual
     Parameters:     genome as list, fitness as integer (higher better)
@@ -25,7 +28,7 @@ def initialize_individual(genome:list, fitness: int) -> Individual:
     Tests:          ./unit_tests/*
     Status:         Do this one!
     """
-    return Individual(genome=genome,fitness=fitness)
+    return Individual(genome=genome, fitness=fitness)
 
 
 def initialize_pop(board_size: str, pop_size: int) -> Population:
@@ -43,8 +46,11 @@ def initialize_pop(board_size: str, pop_size: int) -> Population:
     population = []
     lst = range(0, board_size)
     for i in range(pop_size):
-        population.append(initialize_individual(genome=random.sample(lst, k=board_size),fitness=100))
+        population.append(
+            initialize_individual(genome=random.sample(lst, k=board_size), fitness=100)
+        )
     return population
+
 
 def recombine_pair(parent1: Individual, parent2: Individual) -> Population:
     """
@@ -68,8 +74,12 @@ def recombine_pair(parent1: Individual, parent2: Individual) -> Population:
     c_genome2 = (
         parent2["genome"][:crossover_point] + parent1["genome"][crossover_point:]
     )
-    return [initialize_individual(c_genome1, 100), initialize_individual(c_genome2, 100)]
-    
+    return [
+        initialize_individual(c_genome1, 100),
+        initialize_individual(c_genome2, 100),
+    ]
+
+
 def recombine_group(parents: Population, recombine_rate: float) -> Population:
     """
     Purpose:        Recombines a whole group, returns the new population
@@ -86,10 +96,11 @@ def recombine_group(parents: Population, recombine_rate: float) -> Population:
     pop = iter(parents)
     for i in pop:
         if random.random() <= recombine_rate:
-            new_pop.extend(recombine_pair(i,next(pop)))
+            new_pop.extend(recombine_pair(i, next(pop)))
         else:
-            new_pop.extend([i,next(pop)])
+            new_pop.extend([i, next(pop)])
     return new_pop
+
 
 def mutate_individual(parent: Individual, mutate_rate: float) -> Individual:
     """
@@ -105,14 +116,15 @@ def mutate_individual(parent: Individual, mutate_rate: float) -> Individual:
     """
     # Generate two random pos in the arr to swap.
     if random.random() <= mutate_rate:
-        genome = parent['genome']
-        pos = random.sample(range(1,len(genome)),2)
+        genome = parent["genome"]
+        pos = random.sample(range(1, len(genome)), 2)
         # SWap the two picked positions
         genome[pos[0]], genome[pos[1]] = genome[pos[1]], genome[pos[0]]
-        indiv = Individual(genome=genome,fitness=100)
+        indiv = Individual(genome=genome, fitness=100)
     else:
         indiv = parent
     return indiv
+
 
 def mutate_group(children: Population, mutate_rate: float) -> Population:
     """
@@ -130,7 +142,8 @@ def mutate_group(children: Population, mutate_rate: float) -> Population:
     for indiv in children:
         new_population.append(mutate_individual(parent=indiv, mutate_rate=mutate_rate))
     return new_population
-    
+
+
 def evaluate_individual(individual: Individual) -> None:
     """
     Purpose:        Computes and modifies the fitness for one individual
@@ -145,22 +158,23 @@ def evaluate_individual(individual: Individual) -> None:
     """
     left_diagional = []
     right_diagional = []
-    for col, row in enumerate(individual['genome']):
+    for col, row in enumerate(individual["genome"]):
         row = int(row)
-        if row - col ==0:
+        if row - col == 0:
             left_diagional.append(0)
-        elif row - col <0:
-            left_diagional.append((row-col))
-        elif(row-col) > 0:
-            left_diagional.append(row-col)
-        right_diagional.append(row+col)
-    right_fit = sum([right_diagional.count(i) >1 for i in right_diagional])
-    left_fit = sum([left_diagional.count(i) >1 for i in left_diagional])
-    rpt_fit = sum([individual['genome'].count(i) >1 for i in individual['genome']])
+        elif row - col < 0:
+            left_diagional.append((row - col))
+        elif (row - col) > 0:
+            left_diagional.append(row - col)
+        right_diagional.append(row + col)
+    right_fit = sum([right_diagional.count(i) > 1 for i in right_diagional])
+    left_fit = sum([left_diagional.count(i) > 1 for i in left_diagional])
+    rpt_fit = sum([individual["genome"].count(i) > 1 for i in individual["genome"]])
 
     # for every confict found add a point to fitness
-    individual['fitness'] = right_fit + left_fit + rpt_fit
-    
+    individual["fitness"] = right_fit + left_fit + rpt_fit
+
+
 def evaluate_group(individuals: Population) -> None:
     """
     Purpose:        Computes and modifies the fitness for population
@@ -175,6 +189,7 @@ def evaluate_group(individuals: Population) -> None:
     """
     for idx in range(len(individuals)):
         evaluate_individual(individual=individuals[idx])
+
 
 def rank_group(individuals: Population) -> None:
     """
@@ -193,6 +208,7 @@ def rank_group(individuals: Population) -> None:
     ):
         individuals[idx] = indiv
 
+
 def parent_select(individuals: Population, number: int) -> Population:
     """
     Purpose:        Choose parents in direct probability to their fitness
@@ -208,7 +224,8 @@ def parent_select(individuals: Population, number: int) -> Population:
     return random.choices(
         individuals, weights=[indiv["fitness"] for indiv in individuals], k=number
     )
-    
+
+
 def survivor_select(individuals: Population, pop_size: int) -> Population:
     """
     Purpose:        Picks who gets to live!
@@ -224,6 +241,7 @@ def survivor_select(individuals: Population, pop_size: int) -> Population:
     """
     rank_group(individuals=individuals)
     return individuals[:pop_size]
+
 
 def evolve(board_size: int, pop_size: int) -> Population:
     """
@@ -248,8 +266,8 @@ def evolve(board_size: int, pop_size: int) -> Population:
         parents = parent_select(individuals=population, number=80)
         children = recombine_group(parents=parents, recombine_rate=0.8)
         # mutate_rate = (1 - (best_fitness / perfect_fitness)) / 5
-        #This needs more thinking
-        mutate_rate = (0.2*np.log(best_fitness+1))
+        # This needs more thinking
+        mutate_rate = 0.2 * np.log(best_fitness + 1)
         mutants = mutate_group(children=children, mutate_rate=mutate_rate)
         evaluate_group(individuals=mutants)
         everyone = population + mutants
@@ -259,11 +277,13 @@ def evolve(board_size: int, pop_size: int) -> Population:
             best_fitness = population[0]["fitness"]
             print("Iteration number", counter, "with best individual", population[0])
     return population
-    
+
+
 if __name__ == "__main__":
     # Execute doctests to protect main:
     import doctest
     import json
+
     # This seeds, so can be commented for random runs
     doctest.testmod()
     if len(sys.argv) == 3:
@@ -277,6 +297,6 @@ if __name__ == "__main__":
     else:
         # BOARD_SIZE = input("What size of board would you like to evolve?\n")
         # POP_SIZE = int(input("How many individuals would you like to evolve?\n"))
-        BOARD_SIZE = 20
-        POP_SIZE = 10
+        BOARD_SIZE = 400
+        POP_SIZE = 100
         population = evolve(BOARD_SIZE, POP_SIZE)
