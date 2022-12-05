@@ -1,6 +1,4 @@
 import sys
-import numpy as np
-import string
 import random
 from typing import TypedDict
 from board_visualization import draw_board
