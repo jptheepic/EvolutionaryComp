@@ -3,7 +3,7 @@ import numpy as np
 import string
 import random
 from typing import TypedDict
-
+from board_visualization import draw_board
 
 class Individual(TypedDict):
     genome: list
@@ -267,7 +267,8 @@ def evolve(board_size: int, pop_size: int) -> Population:
         children = recombine_group(parents=parents, recombine_rate=0.8)
         # mutate_rate = (1 - (best_fitness / perfect_fitness)) / 5
         # This needs more thinking
-        mutate_rate = 0.2 * np.log(best_fitness + 1)
+        # mutate_rate = 0.2 * np.log(best_fitness + 1)
+        mutate_rate = .6
         mutants = mutate_group(children=children, mutate_rate=mutate_rate)
         evaluate_group(individuals=mutants)
         everyone = population + mutants
@@ -276,6 +277,7 @@ def evolve(board_size: int, pop_size: int) -> Population:
         if best_fitness != population[0]["fitness"]:
             best_fitness = population[0]["fitness"]
             print("Iteration number", counter, "with best individual", population[0])
+            draw_board(population[0],counter)
     return population
 
 
@@ -284,6 +286,10 @@ if __name__ == "__main__":
     import doctest
     import json
 
+
+    # TODO: We need to populate and return an array of best indiv in pop over iterations
+    # We also need to create an update board protocl with this system to visualize the population over iterations
+    
     # This seeds, so can be commented for random runs
     doctest.testmod()
     if len(sys.argv) == 3:
@@ -297,6 +303,6 @@ if __name__ == "__main__":
     else:
         # BOARD_SIZE = input("What size of board would you like to evolve?\n")
         # POP_SIZE = int(input("How many individuals would you like to evolve?\n"))
-        BOARD_SIZE = 400
+        BOARD_SIZE = 20
         POP_SIZE = 100
         population = evolve(BOARD_SIZE, POP_SIZE)
