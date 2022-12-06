@@ -3,15 +3,13 @@ import random
 from typing import TypedDict
 from board_visualization import draw_board
 
+
 class Individual(TypedDict):
     genome: list
     fitness: int
 
 
 Population = list[Individual]
-
-# TODO: Fix random documentation
-# TODO: Do more research on diminishing mutation rate
 
 
 def initialize_individual(genome: list, fitness: int) -> Individual:
@@ -23,8 +21,6 @@ def initialize_individual(genome: list, fitness: int) -> Individual:
     Returns:        One Individual, as a dict[list, int]
     Modifies:       Nothing
     Calls:          Basic python only
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     return Individual(genome=genome, fitness=fitness)
 
@@ -38,8 +34,6 @@ def initialize_pop(board_size: str, pop_size: int) -> Population:
     Returns:        a population, as a list of Individuals
     Modifies:       Nothing
     Calls:          random.choice, string.ascii_letters, initialize_individual
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     population = []
     lst = range(0, board_size)
@@ -59,8 +53,6 @@ def recombine_pair(parent1: Individual, parent2: Individual) -> Population:
     Returns:        One Individual, as a TypedDict[list, int]
     Modifies:       Nothing
     Calls:          Basic python, random.choice, initialize_individual
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     # Single point crossover
     length = len(parent1["genome"])
@@ -87,8 +79,6 @@ def recombine_group(parents: Population, recombine_rate: float) -> Population:
     Returns:        New population of children
     Modifies:       Nothing
     Calls:          Basic python, recombine pair
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     new_pop = []
     pop = iter(parents)
@@ -109,8 +99,6 @@ def mutate_individual(parent: Individual, mutate_rate: float) -> Individual:
     Returns:        One Individual, as a TypedDict[list, int]
     Modifies:       Nothing
     Calls:          Basic python, initialize_individual
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     # Generate two random pos in the arr to swap.
     if random.random() <= mutate_rate:
@@ -133,8 +121,6 @@ def mutate_group(children: Population, mutate_rate: float) -> Population:
     Returns:        One Individual, as a TypedDict[list, int]
     Modifies:       Nothing
     Calls:          Basic python, mutate_individual
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     new_population = []
     for indiv in children:
@@ -151,8 +137,6 @@ def evaluate_individual(individual: Individual) -> None:
     Returns:        None
     Modifies:       The individual (mutable object)
     Calls:          Basic python only
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     left_diagional = []
     right_diagional = []
@@ -182,8 +166,6 @@ def evaluate_group(individuals: Population) -> None:
     Returns:        None
     Modifies:       The Individuals, all mutable objects
     Calls:          Basic python, evaluate_individual
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     for idx in range(len(individuals)):
         evaluate_individual(individual=individuals[idx])
@@ -198,8 +180,6 @@ def rank_group(individuals: Population) -> None:
     Returns:        None
     Modifies:       The population's order (a mutable object)
     Calls:          Basic python only
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     for idx, indiv in enumerate(
         sorted(individuals, key=lambda x: x["fitness"], reverse=False)
@@ -216,8 +196,6 @@ def parent_select(individuals: Population, number: int) -> Population:
     Returns:        Sub-population
     Modifies:       Nothing
     Calls:          Basic python, random.choices 
-    Tests:          ./unit_tests/*
-    Status:         Do this one!
     """
     return random.choices(
         individuals, weights=[indiv["fitness"] for indiv in individuals], k=number
@@ -232,9 +210,7 @@ def survivor_select(individuals: Population, pop_size: int) -> Population:
     Prints:         no
     Returns:        Population, of pop_size
     Modifies:       Nothing
-    Calls:          Basic python only
-    Tests:          ./unit_tests/*
-    Status:         
+    Calls:          Basic python only, rank_group      
    
     """
     rank_group(individuals=individuals)
@@ -249,58 +225,46 @@ def evolve(board_size: int, pop_size: int) -> Population:
     Prints:         Updates every time fitness switches.
     Returns:        Population
     Modifies:       Various data structures
-    Calls:          Basic python only, all your functions
-    Tests:          ./stdio_tests/* and ./arg_tests/
-    Status:         Giving you this one.
+    Calls:          Basic python only, all functions
     """
     population = initialize_pop(board_size=board_size, pop_size=pop_size)
     evaluate_group(individuals=population)
     rank_group(individuals=population)
     best_fitness = population[0]["fitness"]
     perfect_fitness = 0
+    # This will keep track of how many iterations occur without improvemnet 
+    # This will affect the mutation rate 
+    no_improvement = 0.4
     counter = 0
     while best_fitness > perfect_fitness:
         counter += 1
         parents = parent_select(individuals=population, number=80)
         children = recombine_group(parents=parents, recombine_rate=0.8)
-        # mutate_rate = (1 - (best_fitness / perfect_fitness)) / 5
-        # This needs more thinking
-        # mutate_rate = 0.2 * np.log(best_fitness + 1)
-        mutate_rate = .6
+        mutate_rate = no_improvement
+        # Mustation rate will increase as no improvement occurs
         mutants = mutate_group(children=children, mutate_rate=mutate_rate)
         evaluate_group(individuals=mutants)
         everyone = population + mutants
         rank_group(individuals=everyone)
         population = survivor_select(individuals=everyone, pop_size=pop_size)
+        # Uncomment this to see all iterations of the board.. will pop up a lot
+        # draw_board(population[0], counter)
+        if population[0]['fitness'] < 5:
+            draw_board(population[0], counter)
         if best_fitness != population[0]["fitness"]:
             best_fitness = population[0]["fitness"]
             print("Iteration number", counter, "with best individual", population[0])
-            draw_board(population[0],counter)
+            draw_board(population[0], counter)
+            no_improvement = 0.4
+        else:
+            no_improvement += .001
     return population
 
 
 if __name__ == "__main__":
-    # Execute doctests to protect main:
-    import doctest
-    import json
+    # BOARD_SIZE = input("What size of board would you like to evolve?\n")
+    # POP_SIZE = int(input("How many individuals would you like to evolve?\n"))
 
-
-    # TODO: We need to populate and return an array of best indiv in pop over iterations
-    # We also need to create an update board protocl with this system to visualize the population over iterations
-    
-    # This seeds, so can be commented for random runs
-    doctest.testmod()
-    if len(sys.argv) == 3:
-        with open(file=sys.argv[1]) as finput:
-            obj_name = finput.readlines()
-            BOARD_SIZE = obj_name[0].strip()
-            POP_SIZE = int(obj_name[1])
-        with open(file=sys.argv[2], mode="w") as foutput:
-            population = evolve(BOARD_SIZE, POP_SIZE)
-            foutput.write(json.dumps(population) + "\n")
-    else:
-        # BOARD_SIZE = input("What size of board would you like to evolve?\n")
-        # POP_SIZE = int(input("How many individuals would you like to evolve?\n"))
-        BOARD_SIZE = 20
-        POP_SIZE = 100
-        population = evolve(BOARD_SIZE, POP_SIZE)
+    BOARD_SIZE = 100
+    POP_SIZE = 100
+    population = evolve(BOARD_SIZE, POP_SIZE)
