@@ -14,3 +14,4 @@ Then you can run
 ```
 python nqueens.py
 ```
+
