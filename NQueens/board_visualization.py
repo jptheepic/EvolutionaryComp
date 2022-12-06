@@ -62,19 +62,42 @@ def draw_board(indiv: Individual, iteration=0):
         # Creating a consistant offset to graph the lines
         for (col, row) in enumerate(indiv["genome"]):
             if right_diagional[col] != None:
-                draw_evaluation_lines(error_array=right_diagional,idx=col,indiv=indiv,square_size=sq_sz,surface=surface)
+                draw_evaluation_lines(
+                    error_array=right_diagional,
+                    idx=col,
+                    indiv=indiv,
+                    square_size=sq_sz,
+                    surface=surface,
+                )
             if left_diagional[col] != None:
-                draw_evaluation_lines(error_array=left_diagional,idx=col,indiv=indiv,square_size=sq_sz,surface=surface)
+                draw_evaluation_lines(
+                    error_array=left_diagional,
+                    idx=col,
+                    indiv=indiv,
+                    square_size=sq_sz,
+                    surface=surface,
+                )
             if rpt_fit[col] != None:
-                draw_evaluation_lines(error_array=rpt_fit,idx=col,indiv=indiv,square_size=sq_sz,surface=surface)
-
+                draw_evaluation_lines(
+                    error_array=rpt_fit,
+                    idx=col,
+                    indiv=indiv,
+                    square_size=sq_sz,
+                    surface=surface,
+                )
 
         pygame.display.flip()
 
     pygame.quit()
 
 
-def draw_evaluation_lines(error_array:list, idx:int, indiv:Individual,surface:pygame.surface,square_size:int):
+def draw_evaluation_lines(
+    error_array: list,
+    idx: int,
+    indiv: Individual,
+    surface: pygame.surface,
+    square_size: int,
+):
     """This function will take in the array's produced by evaluating the indiviuals along their three axis. It will take each of these list
     one at a time
 
@@ -126,14 +149,18 @@ def evaluate_individual(indiv: Individual):
     right_diagional = [
         i if right_diagional.count(i) > 1 else None for i in right_diagional
     ]
-    left_diagional = [i if left_diagional.count(i) > 1 else None for i in left_diagional]
-    matching_row = [i if indiv["genome"].count(i) > 1 else None for i in indiv["genome"]]
+    left_diagional = [
+        i if left_diagional.count(i) > 1 else None for i in left_diagional
+    ]
+    matching_row = [
+        i if indiv["genome"].count(i) > 1 else None for i in indiv["genome"]
+    ]
 
     return right_diagional, left_diagional, matching_row
 
 
 if __name__ == "__main__":
-    # Initialing a random board size for testing 
+    # Initialing a random board size for testing
     board_size = 8
     lst = range(0, board_size)
     # Draw a random board with the passed board size

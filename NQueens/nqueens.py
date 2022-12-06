@@ -232,8 +232,8 @@ def evolve(board_size: int, pop_size: int) -> Population:
     rank_group(individuals=population)
     best_fitness = population[0]["fitness"]
     perfect_fitness = 0
-    # This will keep track of how many iterations occur without improvemnet 
-    # This will affect the mutation rate 
+    # This will keep track of how many iterations occur without improvemnet
+    # This will affect the mutation rate
     no_improvement = 0.4
     counter = 0
     while best_fitness > perfect_fitness:
@@ -249,7 +249,7 @@ def evolve(board_size: int, pop_size: int) -> Population:
         population = survivor_select(individuals=everyone, pop_size=pop_size)
         # Uncomment this to see all iterations of the board.. will pop up a lot
         # draw_board(population[0], counter)
-        if population[0]['fitness'] < 5:
+        if population[0]["fitness"] < 5:
             draw_board(population[0], counter)
         if best_fitness != population[0]["fitness"]:
             best_fitness = population[0]["fitness"]
@@ -257,7 +257,7 @@ def evolve(board_size: int, pop_size: int) -> Population:
             draw_board(population[0], counter)
             no_improvement = 0.4
         else:
-            no_improvement += .001
+            no_improvement += 0.001
     return population
 
 
